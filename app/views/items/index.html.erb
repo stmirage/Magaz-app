@@ -1,0 +1,8 @@
+<h1>Items</h1>
+
+<ul>
+<% @items.each do |i| %>
+<li><%= link_to i.name, item_path(i) %>|<%= link_to "Редактировать", edit_item_path(i) %>|<%= link_to "Удалить", i, method: :delete, data: { confirm: "Точно хотите удалить?" } %></li>
+<% end %>
+</ul>
+<p><%= link_to "Создать товар", new_item_path() %></p>
