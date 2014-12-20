@@ -1,0 +1,7 @@
+%h1 Item
+
+%ul
+  %li= @item.name
+  %li= urls_to_links(urls_to_images @item.desription)
+  %li= "Ves: #{@item.weight}"
+  %li= "Tsena: #{@item.price}"

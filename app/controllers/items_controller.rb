@@ -1,18 +1,21 @@
 class ItemsController < ApplicationController
 
-	before_filter :find_item, only: [:edit, :update, :destroy]
+	before_filter :find_item, only: [:edit, :update, :destroy, :upvote]
 	before_filter :check_if_admin, only: [:edit, :destroy, :new, :create, :update]
 
 
 	def index
-		@items = Item.all
+		@items = Item
+		@items = @items.where("price > ?", params[:price]) if params[:price]
+		@items = @items.order(:price)
+		@items = @items.limit(params[:limit].to_i) if params[:limit].to_i > 0
 	end
 
 	def show
 		if Item.exists?(params[:id])
 			@item = Item.find(params[:id])
 		else
-			render text: "Not found"
+			render_404
 		end
 	end
 
@@ -49,6 +52,16 @@ class ItemsController < ApplicationController
 
 	end
 
+	def upvote
+		@item.increment!(:voteup, by = 1)
+		redirect_to action: "index"
+
+	end
+
+	def expensive
+		@items = Item.where("price > 1000")
+		render action: "index"
+	end
 
 	private
 		  def item_params
@@ -60,6 +73,6 @@ class ItemsController < ApplicationController
   		  end
 
   		  def check_if_admin
-  		  	render text: "Access denied", status: 403 unless params[:admin]
+  		  	#render_403 unless params[:admin]
   		  end
 end
